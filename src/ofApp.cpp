@@ -4,7 +4,7 @@
 void ofApp::setup(){
     
     ofSetFrameRate(60);
-    ofBackground(188,142,128);
+    ofBackground(0);
     
     //----------------------------------------------------------
     // set the with & height of the application
