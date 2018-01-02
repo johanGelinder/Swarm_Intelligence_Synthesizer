@@ -48,13 +48,9 @@ public:
     void roofBounce();
     void wallBounce();
     double output();
-    void setDistance( float d );
-    int type = 2;
-    
     
     float modIndex = 0;
-   // float sepFrc;
-    
+
     //---------------------------------
     // vector of random color values
     //---------------------------------
@@ -89,6 +85,9 @@ public:
     float fitness = 0;
     float minVal = 200;
     float maxVal = 1200;
+    float minVal2 = 100;
+    float maxVal2 = 800;
+    
 };
 
 

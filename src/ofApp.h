@@ -20,23 +20,24 @@ public:
     void mousePressed(int x, int y, int button);
     void audioOut(float * output, int bufferSize, int nChannels);
     
+    //---------------------------------------
+    // vector of particles objects
+    //---------------------------------------
     vector <Particle*> particles;
-    
-    ofxPanel gui;
-    ofParameter<float> attractionStrength;
-    ofParameter<float> repulsionStrength;
-    ofParameter<float> repulsionRadius;
     
     //---------------------------------------
     // flocking parameters
     //---------------------------------------
+    ofxPanel gui;
+    ofParameter<float> attractionStrength;
+    ofParameter<float> repulsionStrength;
+    ofParameter<float> repulsionRadius;
     ofParameter<float> seperationDistance;
     ofParameter<float> alignmentDistance;
     ofParameter<float> alignmentStrenghts;
     ofParameter<float> wind;
     ofParameter<float> cohesionDistance;
     ofParameter<float> damping;
-    ofParameter<float> radius;
     ofParameter<bool> attractorOn;
     ofParameter<bool> flocking;
     ofParameter<bool> wallBounce;
@@ -44,16 +45,21 @@ public:
     ofParameter<bool> showFitness;
     ofParameter<bool> disablePred;
     
-    
+    //---------------------------------------
+    // synth parameters
+    //---------------------------------------
     ofxPanel gui2;
     ofParameter<float> minVal;
     ofParameter<float> maxVal;
-    //---------------------------------------
-    // animation parameters
-    //---------------------------------------
-    ofParameter<int> resetIntervalTime;
-    int animationStage = 0;
+    ofParameter<float> minVal2;
+    ofParameter<float> maxVal2;
+    ofParameter<float> dlSize;
+    ofParameter<float> dlFeedback;
+    ofParameter<float> amplitude;
+    ofParameter<bool> EnableDelay;
     
+    ofParameter<int> resetIntervalTime;
+
     int _w, _h;
     float moveAttractorX, moveAttractorY;
     float XmoveAttractorX,XmoveAttractorY;
@@ -64,14 +70,13 @@ public:
     
     Particle* best_neigbour;
     ofVec2f best_neigbourPos;
+    
     //---------------------------------------
-    // population sizes
+    // population sizes & predator population
     //---------------------------------------
-    int size = 80;
-    int attractionPointsSize = 1;
+    int size = 5;
     int predatorSize = 8;
     
-    // vector of attraction points
     ofVec2f foodSource;
     vector<Predator *> predators;
     
@@ -87,18 +92,18 @@ public:
     bool firstFrame = false;
     bool stopReulsion = false;
     
-    //Sound
+    //---------------------------------------
+    // sound
+    //---------------------------------------
     ofSoundStream soundStream;
-    maxiOsc mySine, myOtherSine;
+    //maxiOsc mySine, myOtherSine;
     maxiDelayline delay;
-    ofxMaxiFilter filter;
+    //ofxMaxiFilter filter;
     
     int sampleRate = 44100;
     int bufferSize = 512;
     
     double sound;
-    float amp = 0.5;
-    float thres = 0.3;
     float attractionPointDistance = 100;
     int best_particle_index;
     float timer = 0;

@@ -17,6 +17,7 @@ void ofApp::setup(){
     // GUI setup
     //----------------------------------------------------------
     gui.setup();
+    gui.setName("Flocking Parameters");
     gui.setPosition(20,30);
     attractionStrength.set("Attract_Strength",0.3, 0.0, 1.0);
     repulsionStrength.set("Repulsion_Strength", 15, 0.0, 40.0);
@@ -24,7 +25,7 @@ void ofApp::setup(){
     wind.set("Wind", 0.0, -2.5, 2.5);
     
     gui2.setup();
-    gui.setName("Frequency Range");
+    gui2.setName("Frequency Range");
     gui2.setPosition(30 + gui.getWidth(), 30);
     
     //----------------------------------------------------------
@@ -35,7 +36,6 @@ void ofApp::setup(){
     cohesionDistance.set("Cohesion_Distance", 40, 5, 80);
     damping.set("Damping", 0.02f, 0.0f, 0.1f);
     alignmentStrenghts.set("Alignment_Strength", 0.05, 0.0, 0.2);
-    radius.set("Particle_Radius", 3.0, 0.5, 3.0);
     attractorOn.set("Attractor", false);
     flocking.set("Flocking", true);
     showDir.set("Show Direction", false);
@@ -44,9 +44,14 @@ void ofApp::setup(){
     disablePred.set("Disable Preditors", false);
     resetIntervalTime.set("Time", 10, 2, 30);
     
-    
-    minVal.set("minVal", 200, 50, 800);
-    maxVal.set("maxVal", 1200, 800, 2000);
+    minVal.set("pos.x - minVal", 70, 50, 800);
+    maxVal.set("pos.x - maxVal", 900, 800, 2000);
+    minVal2.set("pos.y - minVal", 60, 50, 800);
+    maxVal2.set("pos.y - maxVal", 250, 200, 2000);
+    dlSize.set("Delay Size", 1000, 200, 2000);
+    dlFeedback.set("Delay Feedback", 0.8, 0.2, 1.0);
+    amplitude.set("Amplitude", 0.5, 0.0, 1.0);
+    EnableDelay.set("Delay", true);
     
     //----------------------------------------------------------
     // add to GUI
@@ -60,7 +65,6 @@ void ofApp::setup(){
     gui.add(damping);
     gui.add(alignmentStrenghts);
     gui.add(wind);
-    gui.add(radius);
     gui.add(attractorOn);
     gui.add(flocking);
     gui.add(showDir);
@@ -71,6 +75,12 @@ void ofApp::setup(){
     
     gui2.add(minVal);
     gui2.add(maxVal);
+    gui2.add(minVal2);
+    gui2.add(maxVal2);
+    gui2.add(dlSize);
+    gui2.add(dlFeedback);
+    gui2.add(amplitude);
+    gui2.add(EnableDelay);
     
     //----------------------------------------------------------
     // fill the vector with particle objects
@@ -109,12 +119,13 @@ void ofApp::update(){
         particles[i]->alignment.strength = alignmentStrenghts;
         particles[i]->cohesion.distance = cohesionDistance;
         particles[i]->damping = damping;
-        particles[i]->r = radius;
         particles[i]->wallOn = wallBounce;
         particles[i]->showDirection = showDir;
         particles[i]->showFitness = showFitness;
         particles[i]->minVal = minVal;
         particles[i]->maxVal = maxVal;
+        particles[i]->minVal2 = minVal2;
+        particles[i]->maxVal2 = maxVal2;
         
         for (int j = 0; j < size; j++){
             
@@ -130,7 +141,11 @@ void ofApp::update(){
     //----------------------------------------------------------
     for (int i = 0; i < size; i++){
         if(!stopReulsion) particles[i]->addRepulsionForce(mouseX, mouseY, repulsionRadius, repulsionStrength);
-        particles[i]->pos.x += wind; // add a wind disturbance to the particles
+        
+        //------------------------------------------------------
+        // add a wind disturbance to the particles
+        //------------------------------------------------------
+        particles[i]->pos.x += wind;
     }
     
     //----------------------------------------------------------
@@ -234,7 +249,6 @@ void ofApp::draw(){
     // display GUI and debug values
     //----------------------------------------------------------
     if(debug){
-        
         gui.draw();
         gui2.draw();
         ofPushStyle();
@@ -302,14 +316,19 @@ void ofApp::audioOut(float * output, int bufferSize, int nChannels) {
         //------------------------------------------------------
         // add delay
         //------------------------------------------------------
-        double delayedSound = delay.dl(sound/size, 1000, 0.8);
+        double delayedSound = delay.dl(sound/size, dlSize, dlFeedback);
         
         //------------------------------------------------------
         // map final audio output so there is no clipping or
         // crazy amplitudes
         //------------------------------------------------------
-        output[i*nChannels] = ofMap(delayedSound * amp, 1, -1, 0.8, - 0.8);
-        output[i*nChannels + 1] = output[i*nChannels];
+        if(EnableDelay){
+            output[i*nChannels] = ofMap(delayedSound * amplitude, 1, -1, 0.8, - 0.8);
+            output[i*nChannels + 1] = output[i*nChannels];
+        }else{
+            output[i*nChannels] = ofMap(sound * amplitude, 1, -1, 0.8, - 0.8);
+            output[i*nChannels + 1] = output[i*nChannels];
+        }
     }
 }
 

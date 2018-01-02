@@ -25,7 +25,7 @@ Particle::Particle(float px, float py, float vx, float vy){
     cohesion.strength = 0.06;
     int randomIndex = ofRandom(3);
     particleColor = ofColor(255, randomColor[randomIndex]);
-    r = 1.5;
+    r = 3;
 }
 
 //------------------------------------------------------------
@@ -243,9 +243,9 @@ void Particle::display(){
     //--------------------------------------------------------
     if(showFitness){
         
-    ofDrawBitmapString(modIndex, pos.x + 5, pos.y - 5);
+    //ofDrawBitmapString(modIndex, pos.x + 5, pos.y - 5);
         
-    //ofDrawBitmapString(fitness, pos.x + 5, pos.y - 5);
+    ofDrawBitmapString(fitness, pos.x + 5, pos.y - 5);
     }
     ofPopStyle();
     
@@ -332,24 +332,20 @@ void Particle::wallBounce(){
 }
 
 //------------------------------------------------------------
-void Particle::setDistance( float d ){
-    
-    //fitness = d;
-    
-}
-
-//------------------------------------------------------------
 double Particle::output(){
     
     float frequency = ofMap(pos.x, 0, ofGetWidth(), minVal, maxVal);
-    float frequency2 = ofMap(pos.y, 0, ofGetHeight(), 100, 800);
-    // float frequency = osc.sinewave(osc4.sinewave(osc5.sinewave(ofMap(pos.x, 0, ofGetWidth(), 200, 2000))*440)*osc2.sinewave(osc3.sinewave(ofMap(pos.y, 0, ofGetHeight(), 100, 4000))*160)*150);
+    float frequency2 = ofMap(pos.y, 0, ofGetHeight(), minVal2, maxVal2);
     
     //--------------------------------------------------------
     //
     //--------------------------------------------------------
-    //output = filter2(osc1.sawn(filter1.lopass(frequency, 0.003)), 100 + osc2(0.1)* 5000, 10) * 0.25;
-    // sample = osc.sinewave(freq + env.adsr(mod.sinewave(modFrequency), env.trigger) * modIndex);
-    return osc.sinewave(frequency + osc2.sawn(frequency2) * fitness * modIndex);
+    
+    //return (osc2.sawn(frequency2) * fitness * modIndex ) + osc.sinewave(frequency);
+    
+    // return osc.sinewave(frequency + osc2.sinewave(frequency2) * fitness);
+    return (osc3.sinewave(frequency) + osc.sinewave(frequency2 * fitness/2.0) * modIndex);
+    
+    //return osc.sinewave(frequency + osc2.sawn(frequency2) * fitness * modIndex);
 
 }
