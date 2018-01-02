@@ -11,7 +11,7 @@ Press the 'd' key to display the user interface and to interact with the paramet
 ## Requirements
 
 * openframeworks 0.9.8
-*ofxMaxim
-*ofxGui
+* ofxMaxim
+* ofxGui
 
 
