@@ -44,6 +44,10 @@ public:
     ofParameter<bool> showFitness;
     ofParameter<bool> disablePred;
     
+    
+    ofxPanel gui2;
+    ofParameter<float> minVal;
+    ofParameter<float> maxVal;
     //---------------------------------------
     // animation parameters
     //---------------------------------------
@@ -65,11 +69,11 @@ public:
     //---------------------------------------
     int size = 80;
     int attractionPointsSize = 1;
-    int preditorSize = 8;
+    int predatorSize = 8;
     
     // vector of attraction points
     ofVec2f foodSource;
-    vector<Predator *> preditors;
+    vector<Predator *> predators;
     
     ofTexture bg; // image without pixel data
     

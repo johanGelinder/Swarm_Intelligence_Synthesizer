@@ -161,6 +161,12 @@ void Particle::addForFlocking( Particle *p ){
     if( distance > 0 && distance < alignment.distance ){
         alignment.sum += p->vel.getNormalized();
         alignment.count ++;
+        
+        //-----------------------------------------------------
+        // assign modIndex to the amount of neigbours
+        // within the alignment radius
+        //-----------------------------------------------------
+        modIndex = alignment.count;
     }
     
     if( distance > 0 && distance < cohesion.distance ){
@@ -235,7 +241,12 @@ void Particle::display(){
     //--------------------------------------------------------
     // display each particle's fitness
     //--------------------------------------------------------
-    if(showFitness) ofDrawBitmapString(fitness, pos.x + 5, pos.y - 5);
+    if(showFitness){
+        
+    ofDrawBitmapString(modIndex, pos.x + 5, pos.y - 5);
+        
+    //ofDrawBitmapString(fitness, pos.x + 5, pos.y - 5);
+    }
     ofPopStyle();
     
     if(showDirection){
@@ -261,7 +272,6 @@ void Particle::display(){
         
         ofPopMatrix();
         ofPopStyle();
-        
     }
 }
 
@@ -331,7 +341,7 @@ void Particle::setDistance( float d ){
 //------------------------------------------------------------
 double Particle::output(){
     
-    float frequency = ofMap(pos.x, 0, ofGetWidth(), 200, 1200);
+    float frequency = ofMap(pos.x, 0, ofGetWidth(), minVal, maxVal);
     float frequency2 = ofMap(pos.y, 0, ofGetHeight(), 100, 800);
     // float frequency = osc.sinewave(osc4.sinewave(osc5.sinewave(ofMap(pos.x, 0, ofGetWidth(), 200, 2000))*440)*osc2.sinewave(osc3.sinewave(ofMap(pos.y, 0, ofGetHeight(), 100, 4000))*160)*150);
     
@@ -340,7 +350,6 @@ double Particle::output(){
     //--------------------------------------------------------
     //output = filter2(osc1.sawn(filter1.lopass(frequency, 0.003)), 100 + osc2(0.1)* 5000, 10) * 0.25;
     // sample = osc.sinewave(freq + env.adsr(mod.sinewave(modFrequency), env.trigger) * modIndex);
-    return osc.sinewave(frequency + osc2.sawn(frequency2) * fitness * 2.0);
-    // return osc.sinewave(fitness * 2.0);
-    // return filter2.lores(osc.sawn(filter1.lopass(frequency, 0.03)), frequency2 + osc2.phasor(1) * fitness, osc3.sinewave(10));
+    return osc.sinewave(frequency + osc2.sawn(frequency2) * fitness * modIndex);
+
 }

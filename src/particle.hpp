@@ -51,6 +51,10 @@ public:
     void setDistance( float d );
     int type = 2;
     
+    
+    float modIndex = 0;
+   // float sepFrc;
+    
     //---------------------------------
     // vector of random color values
     //---------------------------------
@@ -83,6 +87,8 @@ public:
     bool setDist = false;
     bool showFitness = false;
     float fitness = 0;
+    float minVal = 200;
+    float maxVal = 1200;
 };
 
 

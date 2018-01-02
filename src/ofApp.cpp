@@ -23,6 +23,10 @@ void ofApp::setup(){
     repulsionRadius.set("Repulsion_Radius", 20.0, 10.0, 50.0);
     wind.set("Wind", 0.0, -2.5, 2.5);
     
+    gui2.setup();
+    gui.setName("Frequency Range");
+    gui2.setPosition(30 + gui.getWidth(), 30);
+    
     //----------------------------------------------------------
     // flocking parameters
     //----------------------------------------------------------
@@ -39,6 +43,10 @@ void ofApp::setup(){
     wallBounce.set("Wall_Bounce", false);
     disablePred.set("Disable Preditors", false);
     resetIntervalTime.set("Time", 10, 2, 30);
+    
+    
+    minVal.set("minVal", 200, 50, 800);
+    maxVal.set("maxVal", 1200, 800, 2000);
     
     //----------------------------------------------------------
     // add to GUI
@@ -61,6 +69,9 @@ void ofApp::setup(){
     gui.add(disablePred);
     gui.add(resetIntervalTime);
     
+    gui2.add(minVal);
+    gui2.add(maxVal);
+    
     //----------------------------------------------------------
     // fill the vector with particle objects
     //----------------------------------------------------------
@@ -76,8 +87,8 @@ void ofApp::setup(){
     //----------------------------------------------------------
     // create the predators
     //----------------------------------------------------------
-    for(int i = 0; i < preditorSize; i ++){
-        preditors.push_back(new Predator(ofVec2f(ofRandom(0, ofGetWidth()), ofRandom(0, ofGetHeight())),ofVec2f(ofRandom(-2, 2),ofRandom(-2, 2))));
+    for(int i = 0; i < predatorSize; i ++){
+        predators.push_back(new Predator(ofVec2f(ofRandom(0, ofGetWidth()), ofRandom(0, ofGetHeight())),ofVec2f(ofRandom(-2, 2),ofRandom(-2, 2))));
     }
     
     soundStream.setup(this, 2, 0, sampleRate, bufferSize, 2);
@@ -102,6 +113,8 @@ void ofApp::update(){
         particles[i]->wallOn = wallBounce;
         particles[i]->showDirection = showDir;
         particles[i]->showFitness = showFitness;
+        particles[i]->minVal = minVal;
+        particles[i]->maxVal = maxVal;
         
         for (int j = 0; j < size; j++){
             
@@ -129,8 +142,8 @@ void ofApp::update(){
     //----------------------------------------------------------
     // update the preditors position
     //----------------------------------------------------------
-    for(int i = 0; i < preditorSize; i ++){
-        preditors[i]->update();
+    for(int i = 0; i < predatorSize; i ++){
+        predators[i]->update();
     }
     
     //----------------------------------------------------------
@@ -138,11 +151,11 @@ void ofApp::update(){
     // particle repel from the preditors
     //----------------------------------------------------------
     for( int i = 0; i < size; i ++){
-        for(int j = 0; j < preditorSize; j ++){
+        for(int j = 0; j < predatorSize; j ++){
             if(!disablePred) {
-                preditors[j]->chase(particles[i]->pos.x, particles[i]->pos.y, 150, 0.05);
+                predators[j]->chase(particles[i]->pos.x, particles[i]->pos.y, 150, 0.05);
             }
-            particles[i]->addRepulsionForce(preditors[j]->pos.x, preditors[j]->pos.y, repulsionRadius, repulsionStrength);
+            particles[i]->addRepulsionForce(predators[j]->pos.x, predators[j]->pos.y, repulsionRadius, repulsionStrength);
         }
     }
     
@@ -213,8 +226,8 @@ void ofApp::draw(){
     //----------------------------------------------------------
     // display the predators
     //----------------------------------------------------------
-    for(int i = 0; i < preditorSize; i ++){
-        preditors[i]->display();
+    for(int i = 0; i < predatorSize; i ++){
+        predators[i]->display();
     }
     
     //----------------------------------------------------------
@@ -223,6 +236,7 @@ void ofApp::draw(){
     if(debug){
         
         gui.draw();
+        gui2.draw();
         ofPushStyle();
         ofSetColor(255,0,0);
         ofNoFill();
